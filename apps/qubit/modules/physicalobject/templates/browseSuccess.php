@@ -39,16 +39,27 @@
         </th>
       </tr>
     </thead><tbody>
-      <?php foreach ($pager->getResults() as $item): ?>
+
+<?php if (isset($pager)): ?>
+  <h1><?php echo $pager->getNbResults(); ?></h1>
+<?php endif; ?>
+
+      <?php if (isset($pager) && $pager->getNbResults()): ?>
+<h1>sdsdsdsds</h1>
+      <?php endif; ?>
+
+      <?php foreach ($pager->getResults() as $hit): ?>
+        <?php $doc = $hit->getData() ?>
+<?php print_r($doc['physicalObjects']); exit();?>
         <tr class="<?php echo 0 == @++$row % 2 ? 'even' : 'odd' ?>">
           <td>
-            <?php echo link_to(render_title($item), array($item, 'module' => 'physicalobject')) ?>
+            <?php echo $doc['name']; //echo link_to(render_title($item), array($item, 'module' => 'physicalobject')) ?>
           </td>
           <td>
-            <?php echo render_value_inline($item->location) ?>
+            <?php //echo render_value_inline($item->location) ?>
           </td>
           <td>
-            <?php echo render_value_inline($item->type) ?>
+            <?php //echo render_value_inline($item->type) ?>
           </td>
         </tr>
       <?php endforeach; ?>

@@ -17,10 +17,32 @@
  * along with Access to Memory (AtoM).  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class PhysicalObjectBrowseAction extends sfAction
+class PhysicalObjectBrowseAction extends DefaultBrowseAction
 {
   public function execute($request)
   {
+    parent::execute($request);
+
+/*
+    // Filter by whether or not an actor has a digital object attached
+    if (isset($this->request->hasDigitalObject))
+    {
+      $queryField = new \Elastica\Query\Term;
+      $queryField->setTerm('hasDigitalObject', $this->request->hasDigitalObject);
+      $this->search->queryBool->addMust($queryField);
+    }
+
+    $this->search->query->setQuery($this->search->queryBool);
+*/
+
+    $resultSet = QubitSearch::getInstance()->index->getType('QubitInformationObject')->search($this->search->getQuery(true, false));
+
+    $this->pager = new QubitSearchPager($resultSet);
+    #$this->pager->setPage($request->page ? $request->page : 1);
+    #$this->pager->setMaxPerPage($this->limit);
+    $this->pager->init();
+
+/*
     if (!isset($request->limit))
     {
       $request->limit = sfConfig::get('app_hits_per_page');
@@ -43,7 +65,9 @@ class PhysicalObjectBrowseAction extends sfAction
       $criteria->add(QubitPhysicalObjectI18n::CULTURE, $this->context->user->getCulture());
       $criteria->add(QubitPhysicalObjectI18n::NAME, "$request->subquery%", Criteria::LIKE);
     }
+*/
 
+/*
     switch ($request->sort)
     {
       case 'nameDown':
@@ -66,11 +90,14 @@ class PhysicalObjectBrowseAction extends sfAction
         $request->sort = 'nameUp';
         $criteria->addAscendingOrderByColumn('name');
     }
+*/
 
+/*
     // Page results
     $this->pager = new QubitPager('QubitPhysicalObject');
     $this->pager->setCriteria($criteria);
     $this->pager->setMaxPerPage($request->limit);
     $this->pager->setPage($request->page);
+*/
   }
 }
