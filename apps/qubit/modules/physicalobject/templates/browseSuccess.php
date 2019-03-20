@@ -40,10 +40,6 @@
       </tr>
     </thead><tbody>
 
-<?php if (isset($pager)): ?>
-  <h1><?php echo $pager->getNbResults(); ?></h1>
-<?php endif; ?>
-
       <?php if (isset($pager) && $pager->getNbResults()): ?>
 <h1>sdsdsdsds</h1>
       <?php endif; ?>

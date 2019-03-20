@@ -23,23 +23,21 @@ class PhysicalObjectBrowseAction extends DefaultBrowseAction
   {
     parent::execute($request);
 
-/*
-    // Filter by whether or not an actor has a digital object attached
-    if (isset($this->request->hasDigitalObject))
-    {
-      $queryField = new \Elastica\Query\Term;
-      $queryField->setTerm('hasDigitalObject', $this->request->hasDigitalObject);
-      $this->search->queryBool->addMust($queryField);
-    }
+    $queryField = new \Elastica\Query\QueryString('Example shelf');
+    $queryField->setFields(array('physicalObjects.i18n.en.name'));
+    $queryField->setDefaultOperator('AND');
 
-    $this->search->query->setQuery($this->search->queryBool);
-*/
+    $queryNested = new \Elastica\Query\Nested();
+    $queryNested->setPath('physicalObjects');
+    $queryNested->setQuery($queryField);
+
+    $this->search->queryBool->addMust($queryNested);
 
     $resultSet = QubitSearch::getInstance()->index->getType('QubitInformationObject')->search($this->search->getQuery(true, false));
 
     $this->pager = new QubitSearchPager($resultSet);
-    #$this->pager->setPage($request->page ? $request->page : 1);
-    #$this->pager->setMaxPerPage($this->limit);
+    $this->pager->setPage($request->page ? $request->page : 1);
+    $this->pager->setMaxPerPage($this->limit);
     $this->pager->init();
 
 /*

@@ -276,6 +276,7 @@ mapping:
       i18n: true
       nested_only: true
     dynamic: strict
+    type: nested
 
   property:
     _attributes:
