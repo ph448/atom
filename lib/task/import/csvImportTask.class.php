@@ -456,7 +456,7 @@ EOF;
       'preSaveLogic' => function(&$self)
       {
         // Set repository
-        if (isset($self->rowStatusVars['repository']) && $self->rowStatusVars['repository'])
+        if ($self->object instanceof QubitInformationObject && isset($self->rowStatusVars['repository']) && $self->rowStatusVars['repository'])
         {
           $repository = $self->createOrFetchRepository($self->rowStatusVars['repository']);
           $self->object->repositoryId = $repository->id;
@@ -547,7 +547,7 @@ EOF;
           if (!isset($self->rowStatusVars['parentId']) || !$self->rowStatusVars['parentId'])
           {
             // Don't overwrite valid parentId when adding an i18n row
-            if (!isset($self->object->parentId))
+            if ($self->object instanceof QubitInformationObject && !isset($self->object->parentId))
             {
               $parentId = $self->status['defaultParentId'];
             }
@@ -571,12 +571,16 @@ EOF;
                                $self->rowStatusVars['legacyId'], $self->rowStatusVars['parentId']);
 
               print $self->logError($error);
-              $self->object->parentId = QubitInformationObject::ROOT_ID;
+
+              if ($self->object instanceof QubitInformationObject)
+              {
+                $self->object->parentId = QubitInformationObject::ROOT_ID;
+              }
             }
           }
         }
 
-        if (isset($parentId))
+        if (isset($parentId) && $self->object instanceof QubitInformationObject)
         {
           $self->object->parentId = $parentId;
         }
@@ -594,7 +598,7 @@ EOF;
         $self->createKeymapEntry($self->getStatus('sourceName'), $self->rowStatusVars['legacyId']);
 
         // Inherit repository instead of duplicating the association to it if applicable
-        if ($self->object->canInheritRepository($self->object->repositoryId))
+        if ($self->object instanceof QubitInformationObject && $self->object->canInheritRepository($self->object->repositoryId))
         {
           // Use raw SQL since we don't want an entire save() here.
           $sql = 'UPDATE information_object SET repository_id = NULL WHERE id = ?';

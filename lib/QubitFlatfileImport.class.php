@@ -823,7 +823,16 @@ class QubitFlatfileImport
     // any matching against existing information objects.
     if (!$this->isUpdating() && !$this->skipMatched)
     {
-      $this->object = new QubitInformationObject;
+      if (!empty($this->status['lastLegacyId']) && $this->columnValue('legacyId') == $this->status['lastLegacyId'])
+      {
+        $this->object = new QubitInformationObjectI18n;
+        $this->object->id = $this->status['lastId'];
+      }
+      else
+      {
+        $this->object = new QubitInformationObject;
+      }
+
       return false;
     }
 
@@ -1243,6 +1252,9 @@ class QubitFlatfileImport
         $self->storeScriptSerializedProperty($self->scriptMap[$columnName], explode('|', $value));
       }
     });
+
+    $this->status['lastLegacyId'] = $this->columnExists('legacyId') ? trim($this->columnValue('legacyId')) : null;
+    $this->status['lastId'] = $this->object->id;
   }
 
   /**
