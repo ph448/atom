@@ -29,7 +29,7 @@ class ElasticsearchException extends \Exception implements ExceptionInterface
     public function __construct($code, $error)
     {
         $this->_parseError($error);
-        parent::__construct($error, $code);
+        parent::__construct((string)$response->getError());
     }
 
     /**
