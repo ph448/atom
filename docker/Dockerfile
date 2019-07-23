@@ -1,6 +1,6 @@
-FROM php:7-fpm-alpine
+FROM php:7.0-fpm-alpine
 
-ARG GIT_BRANCH=qa/2.4.x
+ARG GIT_BRANCH=v2.4.0
 
 ENV FOP_HOME /usr/share/fop-2.1
 
@@ -9,6 +9,7 @@ RUN set -xe \
 			gettext-dev \
 			libmcrypt-dev \
 			libxslt-dev \
+            libzip-dev \
 			zlib-dev \
 			libmemcached-dev \
 			autoconf \
@@ -16,8 +17,8 @@ RUN set -xe \
 		&& docker-php-ext-install \
 			gettext \
 			mbstring \
-			mcrypt \
 			mysqli \
+            mcrypt \
 			opcache \
 			pdo_mysql \
 			sockets \
